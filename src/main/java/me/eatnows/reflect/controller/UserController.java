@@ -5,8 +5,9 @@ import me.eatnows.reflect.anno.CustomRequestMapping;
 public class UserController {
 
     @CustomRequestMapping("/join")
-    public void join() {
+    public String join() {
         System.out.println("join() 함수 호출됨");
+        return "/";
     }
 
     @CustomRequestMapping("/login")
@@ -20,7 +21,8 @@ public class UserController {
     }
 
     @CustomRequestMapping("/hello")
-    public void hello() {
+    public String hello() {
         System.out.println("hello() 함수 호출됨");
+        return "/";
     }
 }

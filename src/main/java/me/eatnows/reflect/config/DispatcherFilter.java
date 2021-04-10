@@ -51,7 +51,15 @@ public class DispatcherFilter implements Filter {
 
             if (mapping.equals(endPoint)) {
                 try {
-                    method.invoke(userController);
+                    // controller에 메서드가 무슨 타입을 반환할지 모르기 떄문에 Object에서 String으로 다운 캐스팅 해주어야함
+                    String path = (String) method.invoke(userController);
+
+                    // sendRedirect와 RequestDispatcher 하는 방법이 있다.
+                    // RequestDispatcher를 하면 request를 가지고 갈 수 있다.
+                    RequestDispatcher dis = request.getRequestDispatcher(path);
+                    // 내부에서 실행하기 때문에 필터를 타지 않기 떄문에 인덱스 페이지가 나온다.
+                    dis.forward(request, response);
+
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
