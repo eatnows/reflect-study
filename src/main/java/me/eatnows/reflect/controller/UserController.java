@@ -13,4 +13,8 @@ public class UserController {
     public void user() {
         System.out.println("user() 함수 호출됨");
     }
+
+    public void hello() {
+        System.out.println("hello() 함수 호출됨");
+    }
 }

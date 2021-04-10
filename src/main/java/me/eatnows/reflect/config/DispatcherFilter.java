@@ -1,5 +1,6 @@
 package me.eatnows.reflect.config;
 
+import lombok.extern.slf4j.Slf4j;
 import me.eatnows.reflect.controller.UserController;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +9,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
+@Slf4j
 @Configuration
 public class DispatcherFilter implements Filter {
 
@@ -19,15 +23,23 @@ public class DispatcherFilter implements Filter {
 
         String endPoint = request.getRequestURI().substring(request.getContextPath().length());
 
-        System.out.println(endPoint);
+        log.info("엔드 포인트 : " + endPoint);
 
         UserController userController = new UserController();
-        if (endPoint.equals("/join")) {
-            userController.join();
-        } else if (endPoint.equals("/login")) {
-            userController.login();
-        } else if (endPoint.equals("/user")) {
-            userController.user();
+
+        // 리플렉션 -> 메서드를 런타임 시점에서 찾아내어 실행
+        Method[] methods = userController.getClass().getDeclaredMethods();
+        for (Method method : methods) {
+            log.info(method.getName());
+            if (endPoint.equals("/" + method.getName())) {
+                try {
+                    method.invoke(userController);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
